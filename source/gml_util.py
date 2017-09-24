@@ -155,4 +155,30 @@ def train_model(
     plt.legend()
 
     return linear_regressor
+  
+def categorize(arr, num_category=15, use_normal_dist=False):
+    counts = []
+    low_highs = []
+    min_val = np.min(arr)
+    max_val = np.max(arr)
+    mean_val = np.mean(arr)
+    if use_normal_dist:
+        interval = np.std(arr)/(num_category/2)
+    else:
+        interval = (max_val - min_val) / num_category
+    for i in range(num_category):
+        low = min_val + i * interval
+        if i is num_category - 1:
+            high = max_val
+        else:
+            high = low + interval
+        count = np.count_nonzero(np.logical_and(arr >= low, arr < high))
+        counts.append(count)
+        low_highs.append((low, high))
+    return low_highs, counts
 
+def plot_counts(x_labels, counts):
+    plt.bar(np.arange(len(x_labels)), counts)
+    plt.figure(figsize=(30, 20))
+    plt.show()
+    
